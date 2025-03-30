@@ -1,0 +1,16 @@
+# serializers.py
+from rest_framework import serializers
+from .models import *
+from django.db.models import Sum
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = '__all__'
+
+
+class HelpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmergencyRequest
+        fields = '__all__'

@@ -27,7 +27,8 @@
     <button type="submit" onclick="showLocation()">အကူအညီရယူရန်</button>
 </form>
 <p id="location">အကူအညီရယူရန် Button ကိုနှိပ်ပါ</p>
-{% endblock pageContent %} {% block ScriptBlock %}
+{% endblock pageContent %}
+{% block ScriptBlock %}
 <script>
     var userLocation = null;
 
@@ -75,7 +76,7 @@
     function submitForm(event) {
         event.preventDefault();
         var formData = new FormData(document.getElementById("locationForm"));
-        fetch("https://api-endpoint", {
+        fetch("{% url 'help' %}", {
             method: "POST",
             body: formData,
         })
