@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-theme="white">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}Myan Save{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/pico.green.min.css' %}" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+        />
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><strong>Myan Save</strong></li>
+            </ul>
+            <ul>
+                <li><a href="#" class="contrast">About</a></li>
+                <li><a href="#" class="contrast">Get Help</a></li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <main>{% block pageContent %}{% endblock pageContent %}</main>
+            <footer>© 2025 Mayn Save</footer>
+        </div>
+
+        {% block ScriptBlock %}{% endblock ScriptBlock %}
+    </body>
+</html>
