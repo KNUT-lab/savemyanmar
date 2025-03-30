@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*^lieleitzw-)bmus*3#j2dy4y8(--us+-f*d@-y8(#&o6jn@2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['backend.myansafe.com']
 
 
 # Application definition
@@ -54,7 +54,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://noon.knutsolutions.com",  # Your frontend URL
+    "https://myansafe.com",  # Your frontend URL
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

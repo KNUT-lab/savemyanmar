@@ -20,7 +20,8 @@ def Emergency_response(request): #Red Button
             print(data)
             Cty = City.objects.filter(id=data['address']).first()
             EmergencyRequest.objects.create(
-                phone_number = data['name'],
+                name = data['name'],
+                phone_number = data['phone'],
                 note =data['comment'],
                 latitude =data['lat'],
                 longitude =data['lon'],
