@@ -54,9 +54,44 @@ def get_cities(request): #get_cities
 @csrf_exempt
 @api_view(['GET'])
 def get_Emergencies(request):
-    queryset = EmergencyRequest.objects.all()
-    paginator = PageNumberPagination()
-    paginator.page_size = 5  # Customize the page size as needed
-    page = paginator.paginate_queryset(queryset, request)
-    serializer = HelpSerializer(page, many=True)
-    return paginator.get_paginated_response({'Emergencies': serializer.data})
+    try:
+
+        queryset = EmergencyRequest.objects.all()
+        paginator = PageNumberPagination()
+        paginator.page_size = 5  # Customize the page size as needed
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = HelpSerializer(page, many=True)
+        return paginator.get_paginated_response({'Emergencies': serializer.data})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+
+@csrf_exempt
+@api_view(['GET'])
+def get_Emergency(request):
+    data = json.loads(request.body)
+    print(data)
+    emergency_id = data.get('id', None)
+        
+        # Only try to return a specific emergency if emergency_id is provided and non-empty
+    if emergency_id not in (None, ''):
+        try:
+            emergency_id = int(emergency_id)
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid id provided'}, status=400)
+    print(emergency_id)
+    emergency = EmergencyRequest.objects.filter(id=emergency_id).first()
+    if emergency:
+        # Replace 'name' with the actual field you want to return.
+        context = {
+            "name": emergency.name,
+            "phone": emergency.phone_number,
+            "city": emergency.city.name,
+            "note":emergency.note,
+            "lat":emergency.latitude,
+            "lon":emergency.longitude
+            }
+        return JsonResponse({"request": context})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Emergency not found'}, status=404)
