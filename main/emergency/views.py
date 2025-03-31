@@ -19,13 +19,15 @@ def Emergency_response(request): #Red Button
             data = json.loads(request.body)
             print(data)
             Cty = City.objects.filter(id=data['address']).first()
+            Cat = Categories.objects.filter(id=data['cat']).first()
             EmergencyRequest.objects.create(
                 name = data['name'],
                 phone_number = data['phone'],
                 note =data['comment'],
                 latitude =data['lat'],
                 longitude =data['lon'],
-                city = Cty
+                city = Cty,
+                cat = Cat, 
             )
 
             return JsonResponse({'status': 'success', 'fields': {'name':f'll'}, 'pk':f'll' })
