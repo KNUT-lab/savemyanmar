@@ -4,4 +4,5 @@ from .models import *
 
 
 admin.site.register(City)
+admin.site.register(Categories)
 admin.site.register(EmergencyRequest)

@@ -50,6 +50,20 @@ def get_cities(request): #get_cities
         'cities': serializer.data
     })
 
+@csrf_exempt
+@api_view(['GET'])
+def get_categories(request): #get_cities
+    # Retrieve all Category objects
+    cus_list = Categories.objects.all()
+
+    # Serialize the data
+    serializer = CategorySerializer(cus_list, many=True)
+
+    # Return the serialized data in JSON format
+    return Response({
+        'categories': serializer.data
+    })
+
 
 @csrf_exempt
 @api_view(['GET'])
