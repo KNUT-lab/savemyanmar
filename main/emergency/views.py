@@ -83,11 +83,11 @@ def get_Emergencies(request):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_Emergency(request):
-    data = json.loads(request.body)
-    print(data)
-    emergency_id = data.get('id', None)
-        
+def get_Emergency(request, id):
+    #data = json.loads(request.body)
+    #print(data)
+    emergency_id = id
+
         # Only try to return a specific emergency if emergency_id is provided and non-empty
     if emergency_id not in (None, ''):
         try:
@@ -102,6 +102,7 @@ def get_Emergency(request):
             "name": emergency.name,
             "phone": emergency.phone_number,
             "city": emergency.city.name,
+            "category": emergency.cat.name,
             "note":emergency.note,
             "lat":emergency.latitude,
             "lon":emergency.longitude
