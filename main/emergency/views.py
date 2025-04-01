@@ -3,12 +3,51 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import JsonResponse
 from .models import *
+from django.contrib.auth import authenticate, login, logout
 from .serializers import *
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes
 # Create your views here.
 
+
+#REST FRAMEWORK
+@csrf_exempt
+@api_view(['POST'])
+def login_json(request):
+    logout(request)
+    #resp = {"status": 'failed', 'msg': ''}
+    resp = {}
+    try:
+       data = json.loads(request.body)
+    except json.JSONDecodeError:
+       return JsonResponse({"error": "Invalid JSON"}, status=400)
+    print(data)
+    username = str(data.get('username', ''))
+    password = str(data.get('password', ''))
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            print("Pass!")
+            login(request, user)
+            #resp['status'] = 'success'
+            #resp['msg'] = 'Login successful'
+
+            refresh = RefreshToken.for_user(user)
+            resp = {
+                            'status' : 'success',
+                            'msg' : 'Login successful',
+                          'refresh': str(refresh),
+                          'access': str(refresh.access_token),
+                      }
+        else:
+                resp['msg'] = 'This account is not active'
+    else:
+        resp['status'] = 'failure'
+        resp['msg'] = 'Invalid username or password'
+
+    return JsonResponse(resp)
 
 @csrf_exempt
 @api_view(['POST'])
