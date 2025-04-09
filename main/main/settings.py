@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -98,9 +98,9 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',#'django.db.backends.sqlite3',
-        'NAME': 'ai31',
-        'USER': 'root',
-        'PASSWORD': 'A4T0R1A5#aby55w4lke4',
+        'NAME': 'emergency',#os.environ.get('DB_name') ,
+        'USER': 'root',#os.environ.get('DB_user') ,
+        'PASSWORD':'A4T0R1A5#aby55w4lke4', #os.environ.get('DB_password'),
         'Host': '127.0.0.1',
         'Port': '3306',
         'OPTIONS': {
@@ -108,7 +108,7 @@ DATABASES = {
         }
     }
 }
-"""
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 

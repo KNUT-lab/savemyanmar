@@ -112,6 +112,18 @@ def get_Emergencies(request):
     try:
 
         queryset = EmergencyRequest.objects.all()
+        queryset = [
+        {
+        "name": en.name,
+        "phone": en.phone,
+        "city": en.city.name,
+        "category": en.cat.name,
+        "note": en.note,
+        "lat": en.latitude,
+        "lon": en.longitude
+        }
+        for en in queryset
+        ]
         paginator = PageNumberPagination()
         paginator.page_size = 5  # Customize the page size as needed
         page = paginator.paginate_queryset(queryset, request)

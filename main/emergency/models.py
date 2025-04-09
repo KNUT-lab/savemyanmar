@@ -1,9 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class City(models.Model):
+class State(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+    state = models.ForeignKey(State,on_delete=models.CASCADE,default=1)
     def __str__(self):
         return self.name
 
@@ -50,3 +56,14 @@ class HelpCentres(models.Model):
     def __str__(self):
         return f"{self.phone} @ {self.timestamp} in {self.city or 'Unknown'}"
 
+
+
+class Suppliers(models.Model):
+    name = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=20)
+    note = models.TextField(blank=True, null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    city = models.ForeignKey(City,on_delete=models.CASCADE,default=1)
+    cat = models.ManyToManyField(Categories)
+    timestamp = models.DateTimeField(auto_now_add=True)
