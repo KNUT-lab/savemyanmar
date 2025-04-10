@@ -226,10 +226,11 @@ def add_blogpost(request):
         data = request.POST.dict()
         #print(data['title'])
         b = Blogpost(
-            author = Suppliers.objects.first(),
+            author = Suppliers.objects.first(), ## Important that it is a temporary value
             title = data['title'],
             content = data['content'],
             category = data['category']
+            #have not validated with images yet, but this currently works for just text
                      )
         b.save()
         #data = json.loads(request.body)
