@@ -82,8 +82,11 @@ class Blogpost(models.Model):
     content = models.TextField()
     createdAt = models.DateTimeField(auto_now_add=True)
 
+#As there are multiple images per blogpost, they're their own model
 class BlogpostImage(models.Model):
-    blogpost = models.ForeignKey(Blogpost, on_delete=models.CASCADE, related_name='blog_images')
+    blogpost = models.ForeignKey(Blogpost, on_delete=models.CASCADE, related_name='blog_images') 
+    #related_name lets you refer to all the image objects by blogpost.blog_images.all()
+
     image_reference = models.ImageField(upload_to='blog_images/')
 
 

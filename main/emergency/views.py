@@ -207,7 +207,7 @@ def get_blogpost_page(request, id):
     if blog:
         # Replace 'name' with the actual field you want to return.
         context = {
-            "imageUrl": '',
+            "imageUrl": '', ##Images are currently pending and untested
             "title": blog.title,
             "author": blog.author.name,
             "content": blog.content,
@@ -217,3 +217,7 @@ def get_blogpost_page(request, id):
         return JsonResponse({"request": context})
     else:
         return JsonResponse({'status': 'error', 'message': 'Emergency not found'}, status=404)
+    
+def add_blogpost(request):
+    
+    return
