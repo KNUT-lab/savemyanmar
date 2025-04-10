@@ -217,7 +217,22 @@ def get_blogpost_page(request, id):
         return JsonResponse({"request": context})
     else:
         return JsonResponse({'status': 'error', 'message': 'Emergency not found'}, status=404)
-    
+
+@csrf_exempt
+@api_view(['POST'])  
 def add_blogpost(request):
-    
-    return
+    print(f'request: {request}, {request.method}, {request.POST},')
+    if request.method == 'POST':
+        data = request.POST.dict()
+        #print(data['title'])
+        b = Blogpost(
+            author = Suppliers.objects.first(),
+            title = data['title'],
+            content = data['content'],
+            category = data['category']
+                     )
+        b.save()
+        #data = json.loads(request.body)
+        print("Received:", request)
+        return JsonResponse({'message': 'Data received successfully!'})
+    return JsonResponse({'error': 'Only POST allowed'}, status=405)
