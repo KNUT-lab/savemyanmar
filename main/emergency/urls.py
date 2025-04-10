@@ -9,4 +9,6 @@ urlpatterns = [
     path('categories', get_categories, name="categories"),
     path('helplist', get_Emergencies, name="helplist"),
     path('helps/<str:id>', get_Emergency, name="helps"),
+    path('blog', get_blogpost, name='blog'),
+    path('blog/<str:id>', get_blogpost_page, name='blog_page')
 ]

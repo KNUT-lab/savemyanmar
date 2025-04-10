@@ -19,3 +19,13 @@ class HelpSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmergencyRequest
         fields = '__all__'
+
+class SupplierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Suppliers
+        fields = '__all__'
+
+class BlogpostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blogpost
+        fields = '__all__'

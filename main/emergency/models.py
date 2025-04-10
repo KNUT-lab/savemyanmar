@@ -55,8 +55,7 @@ class HelpCentres(models.Model):
 
     def __str__(self):
         return f"{self.phone} @ {self.timestamp} in {self.city or 'Unknown'}"
-
-
+    
 
 class Suppliers(models.Model):
     name = models.CharField(max_length=100, blank=True)
@@ -67,3 +66,27 @@ class Suppliers(models.Model):
     city = models.ForeignKey(City,on_delete=models.CASCADE,default=1)
     cat = models.ManyToManyField(Categories)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class Blogpost(models.Model):
+
+    class  BlogCategory(models.TextChoices):
+        GENERAL = 'general', 'General'
+        WARNING = 'warning', 'Warning'
+        UPDATE = 'update', 'Update'
+        RESOURCE = 'resource', 'Resource'
+        SAFETY = 'safety', 'Safety'
+
+    category = models.CharField(max_length=10, choices=BlogCategory.choices, default=BlogCategory.GENERAL)
+    author = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
+    title = models.TextField()
+    content = models.TextField()
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+class BlogpostImage(models.Model):
+    blogpost = models.ForeignKey(Blogpost, on_delete=models.CASCADE, related_name='blog_images')
+    image_reference = models.ImageField(upload_to='blog_images/')
+
+
+
+    
+    

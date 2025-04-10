@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes
+import traceback
 # Create your views here.
 
 
@@ -72,6 +73,7 @@ def Emergency_response(request): #Red Button
             return JsonResponse({'status': 'success', 'fields': {'name':f'll'}, 'pk':f'll' })
 
         except Exception as e:
+            traceback.print_exc()
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
     return JsonResponse({'status': 'error'}, status=405)
@@ -124,6 +126,7 @@ def get_Emergencies(request):
         }
         for en in queryset
         ]
+        print(queryset)
         paginator = PageNumberPagination()
         paginator.page_size = 5  # Customize the page size as needed
         page = paginator.paginate_queryset(queryset, request)
@@ -131,6 +134,8 @@ def get_Emergencies(request):
         return paginator.get_paginated_response({'Emergencies': serializer.data})
 
     except Exception as e:
+        traceback.print_exc()
+        print("problem")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     
 
@@ -159,6 +164,55 @@ def get_Emergency(request, id):
             "note":emergency.note,
             "lat":emergency.latitude,
             "lon":emergency.longitude
+            }
+        return JsonResponse({"request": context})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Emergency not found'}, status=404)
+    
+@csrf_exempt
+@api_view(['GET'])
+def get_blogpost(request):
+    try:
+        blogpost_list = Blogpost.objects.all()
+        print(f'<blogpost_list>: {blogpost_list}')
+        print(f'<blogpost_list_first_item_id>: {blogpost_list.first().id}')
+        serializer = BlogpostSerializer(blogpost_list, many=True)
+        print(f'<serialized_blogpost_list>: {serializer}')
+
+        return Response({
+        'posts': serializer.data
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+@csrf_exempt
+@api_view(['GET'])
+def get_blogpost_page(request, id):
+    #data = json.loads(request.body)
+    #print(data)
+    blog_id = id
+
+    print(f'blog_id: {blog_id}')
+
+        # Only try to return a specific emergency if emergency_id is provided and non-empty
+    if blog_id not in (None, ''):
+        try:
+            blog_id = int(blog_id)
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid id provided'}, status=400)
+
+    blog = Blogpost.objects.filter(id=blog_id).first()
+    print(f'blog_item: {blog}, {blog.author.name}')
+    if blog:
+        # Replace 'name' with the actual field you want to return.
+        context = {
+            "imageUrl": '',
+            "title": blog.title,
+            "author": blog.author.name,
+            "content": blog.content,
+            "category": blog.category,
+            "createdAt": blog.createdAt
             }
         return JsonResponse({"request": context})
     else:
