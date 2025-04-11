@@ -117,20 +117,24 @@ def get_Emergencies(request): #tied to path /helplist
         queryset = [
         {
         "name": en.name,
-        "phone": en.phone,
-        "city": en.city.name,
-        "category": en.cat.name,
+        "phone_number": en.phone_number,
+        "city": en.city,
+        "cat": en.cat,
         "note": en.note,
-        "lat": en.latitude,
-        "lon": en.longitude
+        "latitude": en.latitude,
+        "longitude": en.longitude
         }
         for en in queryset
         ]
-        print(queryset)
+        #print(queryset)
         paginator = PageNumberPagination()
         paginator.page_size = 5  # Customize the page size as needed
         page = paginator.paginate_queryset(queryset, request)
+
+        #print("Data going into serializer:", page)
+
         serializer = HelpSerializer(page, many=True)
+
         return paginator.get_paginated_response({'Emergencies': serializer.data})
 
     except Exception as e:
@@ -274,4 +278,56 @@ def supplier_page(request): #tied to path /add-suppliers for now
         b.cat.set(cat_list)
         return JsonResponse({'message': 'Data received successfully!'})
 
+@csrf_exempt
+@api_view(['GET'])
+def get_suppliers(request):
+    #Frontend values are name, cat, phone_number, note, timestamp, latitude and longitude
+    try:
+        sup_list = Suppliers.objects.all()
+        print(f'<suppliers_list>: {sup_list}')
+        print(f'<suppliers_list_first_item_id>: {sup_list.first().id}')
+        serializer = SupplierSerializer(sup_list, many=True)
+        print(f'<serialized_suppliers_list>: {serializer}')
 
+        paginator = PageNumberPagination()
+        paginator.page_size = 3  # Customize the page size as needed
+        page = paginator.paginate_queryset(sup_list, request)
+
+        serializer = SupplierSerializer(page, many=True)
+
+        return Response({'posts': serializer.data}) ###PAGINATION CURRENTLY NOT THOROUGHLY TESTED, however frontend takes the response properly
+        #return Response({
+        #'posts': serializer.data
+        #})
+    
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+### old get_emergencies code
+#def get_Emergencies(request): #tied to path /helplist
+#    try:
+#
+#        queryset = EmergencyRequest.objects.all()
+#        queryset = [
+#        {
+#        "name": en.name,
+#        "phone": en.phone,
+#        "city": en.city.name,
+#        "category": en.cat.name,
+#        "note": en.note,
+#        "lat": en.latitude,
+#        "lon": en.longitude
+#        }
+#        for en in queryset
+#        ]
+#        print(queryset)
+#        paginator = PageNumberPagination()
+#        paginator.page_size = 5  # Customize the page size as needed
+#        page = paginator.paginate_queryset(queryset, request)
+#        serializer = HelpSerializer(page, many=True)
+#        return paginator.get_paginated_response({'Emergencies': serializer.data})
+#
+#    except Exception as e:
+#        traceback.print_exc()
+#        print("problem")
+#        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
