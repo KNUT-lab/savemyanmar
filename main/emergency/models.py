@@ -89,6 +89,12 @@ class BlogpostImage(models.Model):
 
     image_reference = models.ImageField(upload_to='blog_images/')
 
+    def blogpost_image_absolute_filepath(self):
+        if self.image_reference and hasattr(self.image_reference, 'path'):
+            return self.image_reference.path
+        return None
+
+
 
 
     

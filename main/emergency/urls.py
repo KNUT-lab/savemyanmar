@@ -11,5 +11,6 @@ urlpatterns = [
     path('helps/<str:id>', get_Emergency, name="helps"),
     path('blog', get_blogpost, name='blog'),
     path('blog/<str:id>', get_blogpost_page, name='blog_page'),
-    path('addblog', add_blogpost, name='add_blogpost')
+    path('addblog', add_blogpost, name='add_blogpost'),
+    path('add-suppliers', supplier_page, name='add-supplier'),
 ]

@@ -16,7 +16,7 @@ import traceback
 #REST FRAMEWORK
 @csrf_exempt
 @api_view(['POST'])
-def login_json(request):
+def login_json(request): #tied to path '/login'
     logout(request)
     #resp = {"status": 'failed', 'msg': ''}
     resp = {}
@@ -52,7 +52,7 @@ def login_json(request):
 
 @csrf_exempt
 @api_view(['POST'])
-def Emergency_response(request): #Red Button
+def Emergency_response(request): #Red Button #tied to path '/help'
     if request.method == 'POST':
         
         try:
@@ -81,7 +81,7 @@ def Emergency_response(request): #Red Button
 
 @csrf_exempt
 @api_view(['GET'])
-def get_cities(request): #get_cities
+def get_cities(request): #get_cities #tied to path /cities
     # Retrieve all Category objects
     cus_list = City.objects.all()
 
@@ -95,7 +95,7 @@ def get_cities(request): #get_cities
 
 @csrf_exempt
 @api_view(['GET'])
-def get_categories(request): #get_cities
+def get_categories(request): #tied to path /categories
     # Retrieve all Category objects
     cus_list = Categories.objects.all()
 
@@ -110,7 +110,7 @@ def get_categories(request): #get_cities
 
 @csrf_exempt
 @api_view(['GET'])
-def get_Emergencies(request):
+def get_Emergencies(request): #tied to path /helplist
     try:
 
         queryset = EmergencyRequest.objects.all()
@@ -141,7 +141,7 @@ def get_Emergencies(request):
 
 @csrf_exempt
 @api_view(['GET'])
-def get_Emergency(request, id):
+def get_Emergency(request, id): #tied to path /helps/<str:id>
     #data = json.loads(request.body)
     #print(data)
     emergency_id = id
@@ -171,7 +171,7 @@ def get_Emergency(request, id):
     
 @csrf_exempt
 @api_view(['GET'])
-def get_blogpost(request):
+def get_blogpost(request): #tied to path /blog
     try:
         blogpost_list = Blogpost.objects.all()
         print(f'<blogpost_list>: {blogpost_list}')
@@ -188,7 +188,7 @@ def get_blogpost(request):
     
 @csrf_exempt
 @api_view(['GET'])
-def get_blogpost_page(request, id):
+def get_blogpost_page(request, id): #tied to path /blog/<str:id>
     #data = json.loads(request.body)
     #print(data)
     blog_id = id
@@ -205,14 +205,18 @@ def get_blogpost_page(request, id):
     blog = Blogpost.objects.filter(id=blog_id).first()
     print(f'blog_item: {blog}, {blog.author.name}')
     if blog:
-        # Replace 'name' with the actual field you want to return.
+        blog_images = list(BlogpostImage.objects.filter(blogpost=blog).all())
+        print(blog_images)
+        blog_images_filepaths = [b.blogpost_image_absolute_filepath() for b in blog_images]
+        #Do not let this reach deployment
         context = {
             "imageUrl": '', ##Images are currently pending and untested
             "title": blog.title,
             "author": blog.author.name,
             "content": blog.content,
             "category": blog.category,
-            "createdAt": blog.createdAt
+            "createdAt": blog.createdAt,
+            "images" : blog_images_filepaths
             }
         return JsonResponse({"request": context})
     else:
@@ -220,8 +224,9 @@ def get_blogpost_page(request, id):
 
 @csrf_exempt
 @api_view(['POST'])  
-def add_blogpost(request):
+def add_blogpost(request): #tied to path /addblog
     print(f'request: {request}, {request.method}, {request.POST},')
+    print(f'REQUEST FILES {request.FILES}')
     if request.method == 'POST':
         data = request.POST.dict()
         #print(data['title'])
@@ -233,7 +238,40 @@ def add_blogpost(request):
             #have not validated with images yet, but this currently works for just text
                      )
         b.save()
+        b_imgs_data = request.FILES.getlist('images')
+        for b_img in b_imgs_data:
+            b2 = BlogpostImage(
+                blogpost = b,
+                image_reference = b_img
+            )
+            b2.save()
         #data = json.loads(request.body)
         print("Received:", request)
         return JsonResponse({'message': 'Data received successfully!'})
     return JsonResponse({'error': 'Only POST allowed'}, status=405)
+
+@csrf_exempt
+@api_view(['POST'])
+def supplier_page(request): #tied to path /add-suppliers for now
+    print(f'request: {request}, {request.method}, {request.body}')
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        print(f'<DATA> {data}')
+        cat_list = data['cat'].split(',')
+        cat_list = [int(a) for a in cat_list]
+        print(cat_list)
+        print("Received:", request)
+        #print(f"<TMP>{City.objects.filter(id=data['address']).first()}")
+        b = Suppliers(
+            name = data['name'],
+            phone = data['phone'],
+            latitude=0,
+            longitude=0, #tmp values
+            note = data['comment'],
+            city = City.objects.get(id=data['address']),
+                     )
+        b.save()
+        b.cat.set(cat_list)
+        return JsonResponse({'message': 'Data received successfully!'})
+
+
