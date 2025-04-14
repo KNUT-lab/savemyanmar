@@ -282,20 +282,26 @@ def supplier_page(request): #tied to path /add-suppliers for now
 @api_view(['GET'])
 def get_suppliers(request): #tied to /generalsuppliers
     #Frontend values are name, cat, phone_number, note, timestamp, latitude and longitude
+    yes_paginate = False #
     try:
         sup_list = Suppliers.objects.all()
         print(f'<suppliers_list>: {sup_list}')
         print(f'<suppliers_list_first_item_id>: {sup_list.first().id}')
         serializer = SupplierSerializer(sup_list, many=True)
         print(f'<serialized_suppliers_list>: {serializer}')
+        if(yes_paginate):
+            paginator = PageNumberPagination()
+            paginator.page_size = 99  # Customize the page size as needed
+            page = paginator.paginate_queryset(sup_list, request)
 
-        paginator = PageNumberPagination()
-        paginator.page_size = 3  # Customize the page size as needed
-        page = paginator.paginate_queryset(sup_list, request)
+            serializer = SupplierSerializer(page, many=True)
 
-        serializer = SupplierSerializer(page, many=True)
+            response = paginator.get_paginated_response(serializer.data) 
+            response.data['backend_pagination_used'] = True
+            return response
+        else:
+            return Response({'results' : serializer.data, 'backend_pagination_used' : False})
 
-        return paginator.get_paginated_response(serializer.data) 
         #return Response({
         #'posts': serializer.data
         #})
