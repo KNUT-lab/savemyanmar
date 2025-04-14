@@ -13,5 +13,6 @@ urlpatterns = [
     path('blog/<str:id>', get_blogpost_page, name='blog_page'),
     path('addblog', add_blogpost, name='add_blogpost'),
     path('add-suppliers', supplier_page, name='add-supplier'),
-    path('generalsuppliers', get_suppliers, name='generalsuppliers')
+    path('generalsuppliers', get_suppliers, name='generalsuppliers'),
+    path('suppliers/<str:id>', get_supplier_detail, name='supplier_detail')
 ]

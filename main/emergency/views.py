@@ -280,7 +280,7 @@ def supplier_page(request): #tied to path /add-suppliers for now
 
 @csrf_exempt
 @api_view(['GET'])
-def get_suppliers(request):
+def get_suppliers(request): #tied to /generalsuppliers
     #Frontend values are name, cat, phone_number, note, timestamp, latitude and longitude
     try:
         sup_list = Suppliers.objects.all()
@@ -295,13 +295,46 @@ def get_suppliers(request):
 
         serializer = SupplierSerializer(page, many=True)
 
-        return Response({'posts': serializer.data}) ###PAGINATION CURRENTLY NOT THOROUGHLY TESTED, however frontend takes the response properly
+        return paginator.get_paginated_response(serializer.data) 
         #return Response({
         #'posts': serializer.data
         #})
     
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+@csrf_exempt
+@api_view(['GET'])
+def get_supplier_detail(request, id): #tied to path /blog/<str:id>
+    #data = json.loads(request.body)
+    #print(data)
+    supplier_id = id
+
+    print(f'supplier_id: {supplier_id}')
+
+        # Only try to return a specific emergency if emergency_id is provided and non-empty
+    if supplier_id not in (None, ''):
+        try:
+            supplier_id = int(supplier_id)
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid id provided'}, status=400)
+
+    supplier = Suppliers.objects.get(id=supplier_id)
+    print(f'supplier item: {supplier}, {supplier.name}')
+    if supplier:
+        context = {
+            "name": supplier.name,
+            "phone": supplier.phone,
+            "note": supplier.note,
+            "latitude" : supplier.latitude,
+            "longitude" : supplier.longitude,
+            "city" : supplier.city,
+            "cat": supplier.cat,
+            "createdAt": supplier.timestamp,
+            }
+        return JsonResponse({"request": context})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Emergency not found'}, status=404)
     
 ### old get_emergencies code
 #def get_Emergencies(request): #tied to path /helplist

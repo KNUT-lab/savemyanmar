@@ -101,6 +101,7 @@ DATABASES = {
         'NAME': 'emergency',#os.environ.get('DB_name') ,
         'USER': 'root',#os.environ.get('DB_user') ,
         'PASSWORD':'A4T0R1A5#aby55w4lke4', #os.environ.get('DB_password'),
+        #'PASSWORD': 'password',
         'Host': '127.0.0.1',
         'Port': '3306',
         'OPTIONS': {
